@@ -2,7 +2,6 @@ const http = require("http");
 const getUsers = require("./modules/users.js");
 
 const server = http.createServer((request, response) => {
-
   if (request.url === "/favicon.ico") {
     response.status = 204;
     response.statusMessage = "OK";
@@ -23,7 +22,6 @@ const server = http.createServer((request, response) => {
   const url = new URL(request.url, "http://127.0.0.1:3003");
   let checkUrl = url.searchParams.get("hello");
   console.log(checkUrl);
- 
 
   if (checkUrl) {
     response.status = 200;
@@ -51,7 +49,6 @@ const server = http.createServer((request, response) => {
     response.write("Hello, world!");
     response.end();
     return;
-
   } else {
     response.status = 500;
     response.statusMessage = "";
