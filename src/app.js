@@ -2,60 +2,41 @@ const http = require("http");
 const getUsers = require("./modules/users.js");
 
 const server = http.createServer((request, response) => {
-  if (request.url === "/favicon.ico") {
-    response.status = 204;
-    response.statusMessage = "OK";
-    response.end();
-    return;
-  }
-
-  if (request.url === "/?users") {
-    response.status = 200;
-    response.statusMessage = "OK";
-    response.header = "Content-Type: application/json";
-    response.write(getUsers());
-    response.end();
-
-    return;
-  }
-
   const url = new URL(request.url, "http://127.0.0.1:3003");
-  let checkUrl = url.searchParams.get("hello");
-  console.log(checkUrl);
+  console.log(url.searchParams);
+  console.log(request.url);
 
-  if (checkUrl) {
-    response.status = 200;
-    response.statusMessage = "OK";
-    response.header = "Content-Type: text/plain";
-    response.write(`Hello, ${checkUrl}`);
+  if (request.url === "/users") {
+    response.writeHead(200, "OK", { "Content-Type": "application/json" });
+    response.write(getUsers());
     response.end();
     return;
   }
 
   if (url.searchParams.has("hello")) {
-    if (checkUrl === "") {
-      response.status = 400;
-      response.header = "Content-Type: text/plain";
+    const name = url.searchParams.get("hello");
+    if (name === null || name === "") {
+      response.writeHead(400, "Bad Request", { "Content-Type": "text/plain" });
       response.write(`Enter a name`);
       response.end();
-      return;
-    }
-
-    if (checkUrl === null) {
-      response.status = 200;
-      response.statusMessage = "OK";
-      response.header = "Content-Type: text/plain";
-      response.write("Hello, world!");
+    } else {
+      response.writeHead(200, "OK", { "Content-Type": "text/plain" });
+      response.write(`Hello, ${name}`);
       response.end();
       return;
     }
+   } else if (request.url === "/?") {
+    response.writeHead(200, "OK", { "Content-Type": "text/plain" });
+    response.write("Hello World");
+    response.end();
+    return;
   } else {
-    response.status = 500;
-    response.write("");
+    response.writeHead(500, "OK", { "Content-Type": "text/plain" });
+    response.write(" ");
     response.end();
   }
-  });
 
+});
 server.listen(3003, () => {
   console.log("Сервер запущен по адресу http://127.0.0.1:3003");
 });
